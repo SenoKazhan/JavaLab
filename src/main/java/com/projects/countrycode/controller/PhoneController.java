@@ -1,8 +1,8 @@
-package com.projects.countrycode.Controller;
+package com.projects.countrycode.controller;
 //Controller: Отвечает за обработку запросов от клиента и взаимодействие с пользовательским интерфейсом.
 
-import com.projects.countrycode.Domain.EntityCountries;
-import com.projects.countrycode.Service.ServicePhone;
+import com.projects.countrycode.domain.EntityCountries;
+import com.projects.countrycode.service.ServicePhone;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

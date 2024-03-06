@@ -1,7 +1,7 @@
-package com.projects.countrycode.Service;
+package com.projects.countrycode.service;
 
-import com.projects.countrycode.Domain.EntityCountries;
-import com.projects.countrycode.repoDAO.repoDao;
+import com.projects.countrycode.domain.EntityCountries;
+import com.projects.countrycode.repodao.Repodao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,9 +9,9 @@ import java.util.Optional;
 
 @Service
 public class ServiceImp implements ServicePhone{
-    private final repoDao repoDao;
+    private final Repodao repoDao;
 
-    public ServiceImp(repoDao repoDao) {
+    public ServiceImp(Repodao repoDao) {
         this.repoDao = repoDao;
     }
 

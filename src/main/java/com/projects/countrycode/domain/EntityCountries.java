@@ -1,4 +1,4 @@
-package com.projects.countrycode.Domain;
+package com.projects.countrycode.domain;
 
 import jakarta.persistence.*;
 

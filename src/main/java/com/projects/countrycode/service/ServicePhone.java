@@ -1,6 +1,6 @@
-package com.projects.countrycode.Service;
+package com.projects.countrycode.service;
 
-import com.projects.countrycode.Domain.EntityCountries;
+import com.projects.countrycode.domain.EntityCountries;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
