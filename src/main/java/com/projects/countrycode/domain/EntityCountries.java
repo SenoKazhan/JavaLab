@@ -8,7 +8,7 @@ public class EntityCountries {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private Long id;
+    private Integer id;
     @Column(name = "Country_name")
     private String countryName;
     @Column(name = "Country_code")
@@ -19,18 +19,18 @@ public class EntityCountries {
     public EntityCountries() {
     }
 
-    public EntityCountries(Long id, String countryName, String countryCode, Long phoneCode) {
+    public EntityCountries(Integer id, String countryName, String countryCode, Long phoneCode) {
         this.id = id;
         this.countryName = countryName;
         this.countryCode = countryCode;
         this.phoneCode = phoneCode;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

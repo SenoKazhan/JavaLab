@@ -28,12 +28,11 @@ public class PhoneController{
     @GetMapping("/getCountryInfo")
     public String getCountryInfo(@RequestParam(name = "name", defaultValue = "null") String countryName) {
         List<EntityCountries> countries = servicePhone.findByName(countryName);
-
+        // Возвращает ВСЕ соответсвующее сущности, в то время как Optional либо одну (уникальный), либо ничего.
         if (countries.isEmpty()) {
             return "No country found for the name: " + countryName;
         }
-
-        EntityCountries country = countries.get(0); // Get the first country (assuming unique names)
+        EntityCountries country = countries.get(0); // Берём первую страну, так как List допускает наличие нескольких сущностей.
         String countryCode = country.getCountryCode();
         Long phoneCode = country.getPhoneCode();
 
