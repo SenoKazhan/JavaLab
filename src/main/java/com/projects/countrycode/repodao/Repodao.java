@@ -10,6 +10,8 @@ import java.util.List;
 
 @Repository
 public interface Repodao extends JpaRepository<EntityCountries, Long> { //Id as primary key
-    List<EntityCountries> findByCountryName(String countryName);
+    EntityCountries findByCountryName(String countryName);
+    List<EntityCountries> findByPhoneCode(Long phoneCode);
+
 }
 

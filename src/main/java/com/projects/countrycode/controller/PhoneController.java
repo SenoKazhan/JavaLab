@@ -26,19 +26,42 @@ public class PhoneController{
     }
 
     @GetMapping("/getCountryInfo")
-    public String getCountryInfo(@RequestParam(name = "name", defaultValue = "null") String countryName) {
-        List<EntityCountries> countries = servicePhone.findByName(countryName);
-        // Возвращает ВСЕ соответсвующее сущности, в то время как Optional либо одну (уникальный), либо ничего.
-        if (countries.isEmpty()) {
-            return "No country found for the name: " + countryName;
+    public String getCountryInfo(@RequestParam(name = "name", defaultValue = "null") String countryName,
+                                 @RequestParam(name = "phoneCode", defaultValue = "0") Long phoneCode) {
+        if (!countryName.equals("null")) {
+            EntityCountries country = servicePhone.findByName(countryName);
+            String countryCode = country.getCountryCode();
+            Long numberCode = country.getPhoneCode();
+            return "Information for country name:\n" +
+                    "Country name: "  + countryName +
+                    "\nPhone number code: " + numberCode +
+                    "\nCountry code: " + countryCode;
         }
-        EntityCountries country = countries.get(0); // Берём первую страну, так как List допускает наличие нескольких сущностей.
-        String countryCode = country.getCountryCode();
-        Long phoneCode = country.getPhoneCode();
+        else if (phoneCode != 0) {
+            List<EntityCountries> countries = servicePhone.findByPhoneCode(phoneCode);
+            if (countries.isEmpty()) {
+                return "No countries found for the phone code: " + phoneCode;
+            }
+            StringBuilder result = new StringBuilder(); // Класс для создания изменяемой последовательности символов.
 
-        return "Country code and phone code for " + countryName + ": " + countryCode + ", " + phoneCode;
+            EntityCountries firstCountry = countries.get(0);
+            result.append("Country info for phone code ").append(phoneCode).append(":\n")
+                    .append("Country Name: ").append(firstCountry.getCountryName()).append("\n")
+                    .append("Country Code: ").append(firstCountry.getCountryCode()).append("\n")
+                    .append("Phone Code: ").append(firstCountry.getPhoneCode()).append("\n\n");
+            result.append("Other countries with the same phone code:\n");
+            for (int i = 1; i < countries.size(); i++) {
+                EntityCountries country = countries.get(i);
+                result.append("Country Name: ").append(country.getCountryName()).append("\n")
+                        .append("Country Code: ").append(country.getCountryCode()).append("\n")
+                        .append("Phone Code: ").append(country.getPhoneCode()).append("\n\n");
+            }
+            return result.toString();
+        }
+        else {
+            return "No parameters provided";
+        }
     }
-
 
     @GetMapping("/{id}")
     public Optional<EntityCountries> findCountryById(@PathVariable("id") Long id){

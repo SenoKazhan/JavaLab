@@ -30,8 +30,12 @@ public class ServiceImp implements ServicePhone{
         return repoDao.save(countryData);
     }
     @Override
-    public List<EntityCountries> findByName(String countryName){
+    public EntityCountries findByName(String countryName){
         return repoDao.findByCountryName(countryName);
+    }
+    @Override
+    public  List<EntityCountries> findByPhoneCode(Long code ) {
+        return repoDao.findByPhoneCode(code);
     }
     @Override
     public EntityCountries updateCountry(EntityCountries countryData) {
