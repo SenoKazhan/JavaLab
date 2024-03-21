@@ -1,49 +1,52 @@
 package com.projects.countrycode.service;
-
-import com.projects.countrycode.domain.EntityCountries;
-import com.projects.countrycode.repodao.Repodao;
+import com.projects.countrycode.domain.Country;
+import com.projects.countrycode.repodao.CountryRepository;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Primary
 @Service
-public class ServiceImp implements ServicePhone{
-    private final Repodao repoDao;
-
-    public ServiceImp(Repodao repoDao) {
+public class ServicePhoneImp implements ServicePhone {
+    private final CountryRepository repoDao;
+    public ServicePhoneImp(CountryRepository repoDao) {
         this.repoDao = repoDao;
     }
-
     @Override
-    public List<EntityCountries> findAllCountries() {
+    public List<Country> findAllCountries() {
         return repoDao.findAll();
     }
-
     @Override
-    public Optional<EntityCountries> findById(Long id) {
+    public Optional<Country> findById(Long id) {
         return repoDao.findById(id);
     }
-
     @Override
-    public EntityCountries saveCountry(EntityCountries countryData) {
-        return repoDao.save(countryData);
+    public void saveCountry(Country countryData) {
+        repoDao.save(countryData);
     }
     @Override
-    public EntityCountries findByName(String countryName){
+    public Country findByName(String countryName){
         return repoDao.findByCountryName(countryName);
     }
     @Override
-    public  List<EntityCountries> findByPhoneCode(Long code ) {
+    public  List<Country> findByPhoneCode(Long code ) {
         return repoDao.findByPhoneCode(code);
     }
     @Override
-    public EntityCountries updateCountry(EntityCountries countryData) {
-        return repoDao.save(countryData);
+    public void updateCountry(Country countryData) {
+        repoDao.save(countryData);
     }
-
     @Override
     public void deleteDataAboutCountry(Long id) {
         repoDao.deleteById(id);
     }
+    @Override //@
+    public void updateCountryName(Long countryId, String newName) {
+        Country country = repoDao.findById(countryId).orElseThrow(() -> new EntityNotFoundException("Country not found"));
+        country.setCountryName(newName);
+        repoDao.save(country);
+    }
+
 }
