@@ -1,4 +1,5 @@
 package com.projects.countrycode.domain;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
-    private Long id;
+    private Integer id;
     @Column(name = "Country_name")
     private String countryName;
     @Column(name = "Country_code")
@@ -19,22 +20,23 @@ public class Country {
     @Column(name = "Phone_code")
     private Long phoneCode;
     //@
-    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, fetch = FetchType.LAZY) //Аннотация mappedBy используется в двухсторонней связи, отношение управляется City.
+    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY) //Аннотация mappedBy используется в двухсторонней связи, отношение управляется City.
     //CascadeType определяет, что должно происходить с зависимыми сущностями, если мы меняем главную сущность.
     //All означает, что все действия, которые мы выполняем с родительским объектом, нужно повторить и для его зависимых объектов.
     private List<City> cities =  new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "country_language",
             joinColumns = @JoinColumn(name = "country_id"), //поле или столбец, который будет использоваться для внешнего ключа.
             inverseJoinColumns = @JoinColumn(name = "language_id")
     )
+    @JsonIgnore
     private List<Language> languages =  new ArrayList<>();
     //@
     public Country() {}
 
-    public Country(Long id, String countryName, String countryCode, Long phoneCode) {
+    public Country(Integer id, String countryName, String countryCode, Long phoneCode) {
         this.id = id;
         this.countryName = countryName;
         this.countryCode = countryCode;
@@ -43,10 +45,10 @@ public class Country {
     public void setCities(List<City> cities) {
         this.cities = cities;
     }
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
     public String getCountryName() {
@@ -69,5 +71,12 @@ public class Country {
     }
     public void addCity(City city){
         cities.add(city);
+        city.setCountry(this);
+    }
+    public List<Language> getLanguages() {
+        return languages;
+    }
+    public void setLanguages(List<Language> languages) {
+        this.languages = languages;
     }
 }

@@ -1,12 +1,13 @@
 package com.projects.countrycode.service;
 import com.projects.countrycode.domain.Country;
+import com.projects.countrycode.domain.Language;
 import com.projects.countrycode.repodao.CountryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
 @Primary
 @Service
 public class ServicePhoneImp implements ServicePhone {
@@ -19,8 +20,8 @@ public class ServicePhoneImp implements ServicePhone {
         return repoDao.findAll();
     }
     @Override
-    public Optional<Country> findById(Long id) {
-        return repoDao.findById(id);
+    public Country findById(Integer id) {
+        return repoDao.findById(id).orElse(null);
     }
     @Override
     public void saveCountry(Country countryData) {
@@ -39,11 +40,11 @@ public class ServicePhoneImp implements ServicePhone {
         repoDao.save(countryData);
     }
     @Override
-    public void deleteDataAboutCountry(Long id) {
+    public void deleteDataAboutCountry(Integer id) {
         repoDao.deleteById(id);
     }
     @Override //@
-    public void updateCountryName(Long countryId, String newName) {
+    public void updateCountryName(Integer countryId, String newName) {
         Country country = repoDao.findById(countryId).orElseThrow(() -> new EntityNotFoundException("Country not found"));
         country.setCountryName(newName);
         repoDao.save(country);

@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 @Entity
 public class City {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "city_sequence")
+    @SequenceGenerator(name = "city_sequence", sequenceName = "city_id_seq", allocationSize = 1)
     private Long id;
     @Column(name = "City_name")
     private String cityName;
@@ -42,4 +43,6 @@ public class City {
     public void setCountry(Country country) {
         this.country = country;
     }
+
+
 }

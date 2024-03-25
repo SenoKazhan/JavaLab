@@ -1,15 +1,16 @@
 package com.projects.countrycode.controller;
 //Controller: Отвечает за обработку запросов от клиента и взаимодействие с пользовательским интерфейсом.
-
 import com.projects.countrycode.domain.Country;
+import com.projects.countrycode.domain.Language;
+import com.projects.countrycode.dto.CountryDto;
 import com.projects.countrycode.service.ServicePhone;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/countries")
@@ -38,8 +39,23 @@ public class ControllerPhone {
     }
 
     @GetMapping("/{id}")
-    public Optional<Country> findCountryById(@PathVariable("id") Long id){
-        return servicePhone.findById(id);
+    public ResponseEntity<CountryDto> findCountryById(@PathVariable("id") Integer id){
+        Country country = servicePhone.findById(id);
+        if (country == null) {
+            return ResponseEntity.notFound().build();
+        }
+        CountryDto countryDto = new CountryDto();
+        countryDto.setId(country.getId());
+        countryDto.setCountryName(country.getCountryName());
+        countryDto.setCountryCode(country.getCountryCode());
+        countryDto.setPhoneCode(country.getPhoneCode());
+        List<String> languageNames = country.getLanguages()
+                .stream()
+                .map(Language::getLanguageName)
+                .toList();
+        countryDto.setLanguages(languageNames);
+
+        return ResponseEntity.ok(countryDto);
     }
 
     @PostMapping
@@ -55,8 +71,9 @@ public class ControllerPhone {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteCountry(@PathVariable("id") Long id){
+    public String deleteCountry(@PathVariable("id") Integer id){
         servicePhone.deleteDataAboutCountry(id);
         return "Deleted successfully" + id;
     }
+
 }
