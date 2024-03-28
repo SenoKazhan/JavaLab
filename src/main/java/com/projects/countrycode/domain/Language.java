@@ -1,47 +1,63 @@
 package com.projects.countrycode.domain;
+
 import jakarta.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
+
 @Entity
+@Table(name = "languages")
 public class Language {
-   @Id
-   @GeneratedValue(strategy = GenerationType.AUTO)
-   private Long id;
-    @Column(name = "Language_name")
-    private String languageName;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "languages")
-    private Set<Country> countries;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lang_sequence")
+  @SequenceGenerator(name = "lang_sequence", sequenceName = "lang_id_seq", allocationSize = 1)
+  private Long id;
 
-    public Language() {}
+  @Column(name = "name")
+  private String name;
 
-    public Language(String languageName, Set<Country> countries) {
-        this.languageName = languageName;
-        this.countries = countries;
-    }
+  @ManyToMany(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+      mappedBy = "languages")
+  private Set<Country> countries = new HashSet<>();
 
-    public String getLanguageName() {
-        return languageName;
-    }
-    public void setLanguageName(String languageName) {
-        this.languageName = languageName;
-    }
+  public Language() {}
 
-    public Set<Country> getCountries() {
-        return countries;
-    }
-    public void setCountries(Set<Country> countries) {this.countries = countries;}
-    public void addCountry(Country country) {
-        this.countries.add(country);
-        country.getLanguages().add(this);
-    }
-    public void removeTag(long tagId) {
-        Country tag = this.countries.stream().filter(t -> t.getId() == tagId).findFirst().orElse(null);
-        if (tag != null) {
-            this.countries.remove(tag);
-            tag.getLanguages().remove(this);
-        }
-    }
-    public Long getId() {
-        return id;
-    }
+  public Language(String languageName, Set<Country> countries) {
+    this.name = languageName;
+    this.countries = countries;
+  }
 
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String languageName) {
+    this.name = languageName;
+  }
+
+  public Set<Country> getCountries() {
+    return countries;
+  }
+
+  public void setCountries(Set<Country> countries) {
+    this.countries = countries;
+  }
+
+  public void addCountry(Country country) {
+    this.countries.add(country);
+    country.getLanguages().add(this);
+  }
+
+  public void removeCountry(long tagId) {
+    Country tag = this.countries.stream().filter(t -> t.getId() == tagId).findFirst().orElse(null);
+    if (tag != null) {
+      this.countries.remove(tag);
+      tag.getLanguages().remove(this);
+    }
+  }
+
+  public Long getId() {
+    return id;
+  }
 }

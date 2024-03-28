@@ -1,54 +1,53 @@
 package com.projects.countrycode.dto;
 
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class CountryDto {
-    private Integer id;
-    private String countryName;
-    private String countryCode;
-    private Long phoneCode;
-    private List<String> languages;
+  private Integer id;
+  private String name;
+  private String code;
+  private Long phone;
+  private List<String> languages;
 
-    public Integer getId() {
-        return id;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public String getCountryName() {
-        return countryName;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public String getCountryCode() {
-        return countryCode;
-    }
+  public String getCode() {
+    return code;
+  }
 
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
+  public void setCode(String code) {
+    this.code = code;
+  }
 
-    public Long getPhoneCode() {
-        return phoneCode;
-    }
+  public Long getPhone() {
+    return phone;
+  }
 
-    public void setPhoneCode(Long phoneCode) {
-        this.phoneCode = phoneCode;
-    }
+  public void setPhone(Long phone) {
+    this.phone = phone;
+  }
 
-    public List<String> getLanguages() {
-        return languages;
-    }
+  public List<String> getLanguages() {
+    return languages;
+  }
 
-    public void setLanguages(List<String> languages) {
-        this.languages = languages;
-    }
+  public void setLanguages(List<String> languages) {
+    this.languages = languages;
+  }
 }
