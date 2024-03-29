@@ -3,17 +3,16 @@ package com.projects.countrycode.service;
 import com.projects.countrycode.domain.Country;
 import com.projects.countrycode.repodao.CountryRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Primary
 @Service
-public class ServicePhoneImp implements ServicePhone {
+public class PhoneServiceImp implements PhoneService {
   private final CountryRepository repoDao;
 
-  public ServicePhoneImp(CountryRepository repoDao) {
+  public PhoneServiceImp(CountryRepository repoDao) {
     this.repoDao = repoDao;
   }
 
@@ -27,10 +26,6 @@ public class ServicePhoneImp implements ServicePhone {
     repoDao.save(countryData);
   }
 
-  @Override
-  public Country findByName(String countryName) {
-    return repoDao.findByName(countryName);
-  }
   @Override
   public List<Country> findByPhoneCode(Long phone) {
     return repoDao.findByPhone(phone);

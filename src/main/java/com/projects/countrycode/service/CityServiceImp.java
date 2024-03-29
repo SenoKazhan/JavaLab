@@ -1,18 +1,17 @@
 package com.projects.countrycode.service;
 
 import com.projects.countrycode.domain.City;
+import com.projects.countrycode.repodao.CityRepository;
+import java.util.List;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import com.projects.countrycode.repodao.CityRepository;
-
-import java.util.List;
 
 @Primary
 @Service
-public class ServiceCityImp implements ServiceCity {
+public class CityServiceImp implements CityService {
   private final CityRepository cityRepository;
 
-  public ServiceCityImp(CityRepository cityRepository) {
+  public CityServiceImp(CityRepository cityRepository) {
     this.cityRepository = cityRepository;
   }
 

@@ -4,7 +4,7 @@ import com.projects.countrycode.domain.City;
 import com.projects.countrycode.domain.Country;
 import com.projects.countrycode.repodao.CityRepository;
 import com.projects.countrycode.repodao.CountryRepository;
-import com.projects.countrycode.service.ServiceCity;
+import com.projects.countrycode.service.CityService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
@@ -16,25 +16,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class ControllerCity {
-  private final ServiceCity serviceCity;
+  private final CityService cityService;
   private final CityRepository cityRepository;
   private final CountryRepository countryRepository;
 
   public ControllerCity(
-      ServiceCity serviceCity, CityRepository cityRepository, CountryRepository countryRepository) {
-    this.serviceCity = serviceCity;
+      CityService cityService, CityRepository cityRepository, CountryRepository countryRepository) {
+    this.cityService = cityService;
     this.cityRepository = cityRepository;
     this.countryRepository = countryRepository;
   }
 
   @GetMapping("/cities")
   public List<City> findAllCities() {
-    return serviceCity.findAllCities();
+    return cityService.findAllCities();
   }
 
   @GetMapping("/cities/{id}")
   public City findCityById(@PathVariable("id") Integer id) {
-    return serviceCity.getCityById(id);
+    return cityService.getCityById(id);
   }
 
   @GetMapping("countries/{countryId}/cities")
@@ -69,7 +69,6 @@ public class ControllerCity {
       City city = cityOptional.get();
       city.setName(commentRequest.getName());
       cityRepository.save(city);
-
       return new ResponseEntity<>(cityRepository.save(city), HttpStatus.OK);
     } else {
       return ResponseEntity.notFound().build();
@@ -78,7 +77,7 @@ public class ControllerCity {
 
   @DeleteMapping("cities/{id}")
   public String deleteLCity(@PathVariable("id") Integer id) {
-    serviceCity.deleteCity(id);
+    cityService.deleteCity(id);
     return "City deleted successfully";
   }
 

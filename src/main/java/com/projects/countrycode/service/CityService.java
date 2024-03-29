@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface ServiceCity {
+public interface CityService {
   List<City> findAllCities();
 
   City getCityById(Integer id);

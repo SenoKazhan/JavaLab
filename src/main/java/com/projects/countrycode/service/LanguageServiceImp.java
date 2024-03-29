@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 
 @Primary
 @Service
-public class ServiceLanguageImp implements ServiceLanguage {
+public class LanguageServiceImp implements LanguageService {
   private final LanguageRepository languageRepository;
 
-  public ServiceLanguageImp(LanguageRepository languageRepository) {
+  public LanguageServiceImp(LanguageRepository languageRepository) {
     this.languageRepository = languageRepository;
   }
 

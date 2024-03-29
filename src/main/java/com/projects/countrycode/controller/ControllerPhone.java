@@ -7,7 +7,8 @@ import com.projects.countrycode.domain.Country;
 import com.projects.countrycode.domain.Language;
 import com.projects.countrycode.dto.CountryDto;
 import com.projects.countrycode.repodao.CountryRepository;
-import com.projects.countrycode.service.ServicePhone;
+import com.projects.countrycode.repodao.LanguageRepository;
+import com.projects.countrycode.service.PhoneService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
@@ -20,31 +21,35 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/countries")
 public class ControllerPhone {
-  private final ServicePhone servicePhone;
+  private final PhoneService phoneService;
   private final CountryRepository countryRepository;
+  private final LanguageRepository languageRepository;
 
-  public ControllerPhone(ServicePhone servicePhone, CountryRepository countryRepository) {
-    this.servicePhone = servicePhone;
+  public ControllerPhone(
+      PhoneService phoneService,
+      CountryRepository countryRepository,
+      LanguageRepository languageRepository) {
+    this.phoneService = phoneService;
     this.countryRepository = countryRepository;
+    this.languageRepository = languageRepository;
   }
 
   @GetMapping
   public List<Country> findAllCountries() {
-    return servicePhone.findAllCountries();
+    return phoneService.findAllCountries();
   }
 
   @GetMapping("/getCountryInfo")
-  public Country getCountryInfo(
+  public Optional<Country> getCountryInfo(
       @RequestParam(name = "name", defaultValue = "null") String countryName) {
-    return servicePhone.findByName(countryName);
+    return countryRepository.findByName(countryName);
   } // Предметное + сервис + ДТО service phone
 
   @GetMapping("/getCodeInfo")
   public List<Country> getCountryInfo(
       @RequestParam(name = "phonecode", defaultValue = "0") Long code) {
-    return servicePhone.findByPhoneCode(code);
+    return phoneService.findByPhoneCode(code);
   }
-
 
   @GetMapping("/{id}")
   public ResponseEntity<CountryDto> findCountryById(@PathVariable("id") Integer id) {
@@ -70,31 +75,49 @@ public class ControllerPhone {
     Optional<Country> countryOptional = countryRepository.findById(countryId);
     if (countryOptional.isPresent()) {
       Country country = countryOptional.get();
-      country.addLanguage(language);
-      countryRepository.save(country);
-      return ResponseEntity.ok("Language added to Country successfully");
+      Optional<Language> existingLanguageOptional =
+          languageRepository.findByName(language.getName());
+      if (existingLanguageOptional.isPresent()) {
+        Language existingLanguage = existingLanguageOptional.get();
+        country.addLanguage(existingLanguage);
+        countryRepository.save(country);
+        return ResponseEntity.ok("Язык успешно добавлен к стране");
+      } else {
+        languageRepository.save(language);
+        country.addLanguage(language);
+        countryRepository.save(country);
+        return ResponseEntity.ok("Новый язык успешно создан и добавлен к стране");
+      }
     } else {
-      throw new ResourceNotFoundException("Country not found with id " + countryId);
+      throw new ResourceNotFoundException("Страна с идентификатором " + countryId + " не найдена");
     }
   }
 
   @PostMapping
   public String saveCountry(@RequestBody Country entityCountries) {
-    servicePhone.saveCountry(entityCountries);
+    phoneService.saveCountry(entityCountries);
     return "Saved successfully";
   }
 
   @PutMapping("/{id}")
-  public String updateCountry(
+  public ResponseEntity<String> updateCountry(
       @PathVariable("id") Integer id, @RequestBody Country entityCountries) {
     Optional<Country> countryOptional = countryRepository.findById(id);
     if (countryOptional.isPresent()) {
       Country country = countryOptional.get();
-      country.setName(entityCountries.getName());
+      if (entityCountries.getName() != null) {
+        country.setName(entityCountries.getName());
+      }
+      if (entityCountries.getPhone() != null) {
+        country.setPhone(entityCountries.getPhone());
+      }
+      if (entityCountries.getCode() != null) {
+        country.setCode(entityCountries.getCode());
+      }
       countryRepository.save(country);
-      return "Updated successfully";
+      return ResponseEntity.ok("Updated successfully");
     } else {
-      return "Failed";
+      return ResponseEntity.ok("The country wasn't found");
     }
   }
 

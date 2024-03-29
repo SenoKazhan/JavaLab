@@ -42,11 +42,11 @@ public class City {
     return country;
   }
 
-  public Long getId() {
-    return id;
-  }
-
   public void setCountry(Country country) {
     this.country = country;
+  }
+
+  public Long getId() {
+    return id;
   }
 }
