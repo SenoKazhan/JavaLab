@@ -11,7 +11,7 @@ Phonecode - это сервис, с помощью которого можно �
 Сервер вернёт код страны и код номера телефона страны.
 
 ## Setup
-1. Clone the repository: https://github.com/SenoKazhan/JavaLab1.git
+1. Clone the repository: https://github.com/SenoKazhan/JavaLab.git
 2. Build this project
 
      * For macOS:
