@@ -116,7 +116,7 @@ public class ControllerLanguage {
         return ResponseEntity.ok("Новая страна успешно создана и добавлена к языку");
       }
     } else {
-      throw new ResourceNotFoundException("Язык с идентификатором " + languageId + " не найден");
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
 

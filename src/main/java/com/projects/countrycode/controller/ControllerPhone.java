@@ -129,7 +129,7 @@ public class ControllerPhone {
         return ResponseEntity.ok("Новый язык успешно создан и добавлен к стране");
       }
     } else {
-      throw new ResourceNotFoundException("Страна с идентификатором " + countryId + " не найдена");
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
 
