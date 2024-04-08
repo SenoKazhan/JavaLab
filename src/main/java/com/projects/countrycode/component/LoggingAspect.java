@@ -15,7 +15,7 @@ public class LoggingAspect {
 
   @Pointcut("execution(* com.projects.countrycode.controller.*.create*(..))")
   public void create() {}
-
+// Аннотация @Pointcut используется для определения точек соединения в коде, где аспект должен быть применен
   @Pointcut("execution(* com.projects.countrycode.controller.*.delete*(..))")
   public void delete() {}
 
@@ -36,4 +36,9 @@ public class LoggingAspect {
   public void logUpdate(Object result) {
     logger.info("Updated: {}", result);
   }
+  //Эти аннотации используются для определения советов,
+  // которые должны быть выполнены в определенные моменты жизненного цикла метода.
+  // Например, @Before выполняется перед выполнением метода, @After после его выполнения, @Around оборачивает метод,
+  // позволяя выполнить дополнительный код до и после вызова метода, @AfterReturning выполняется после успешного выполнения метода,
+  // а @AfterThrowing после возникновения исключения в методе
 }

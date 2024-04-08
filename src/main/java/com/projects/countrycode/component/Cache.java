@@ -3,13 +3,15 @@ package com.projects.countrycode.component;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /** The type Cache. */
 @Component
 @Data
 public class Cache {
-
+  private static final Logger logg = LoggerFactory.getLogger(Cache.class);
   private final Map<String, Object> hashMap =
       new LinkedHashMap<>() {
         @Override
@@ -26,6 +28,7 @@ public class Cache {
    */
   public void putCache(String key, Object value) {
     hashMap.put(key, value);
+    logg.info("Value has been put in cache");
   }
 
   /**
@@ -35,6 +38,7 @@ public class Cache {
    * @return the cache
    */
   public Object getCache(String key) {
+    logg.info("get from cache");
     return hashMap.get(key);
   }
 
@@ -55,5 +59,6 @@ public class Cache {
    */
   public void remove(String key) {
     hashMap.remove(key);
+    logg.info("Removed from cache");
   }
 }

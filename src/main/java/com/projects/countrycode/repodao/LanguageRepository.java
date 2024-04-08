@@ -16,7 +16,6 @@ public interface LanguageRepository extends JpaRepository<Language, Integer> {
    * @return the optional
    */
   Optional<Language> findByName(String name);
-
   @Transactional
   void deleteById(Integer id);
 }

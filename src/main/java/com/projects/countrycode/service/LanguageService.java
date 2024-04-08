@@ -35,7 +35,7 @@ public interface LanguageService {
    * @param id the id
    * @return the language by id
    */
-  public Language getLanguageById(Integer id);
+  Language getLanguageById(Integer id);
 
   /**
    * Delete language.
