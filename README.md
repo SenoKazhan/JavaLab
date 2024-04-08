@@ -21,4 +21,4 @@ Phonecode - это сервис, с помощью которого можно �
    
            mvnw clean install
 ## Code quality
-https://sonarcloud.io/summary/overall?id=SenoKazhan_JavaLab
+https://sonarcloud.io/summary/overall?id=SenoKazhan_JavaLab1
