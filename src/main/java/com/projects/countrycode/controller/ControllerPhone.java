@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 /** The type Controller phone. */
 @RestController
@@ -80,7 +81,11 @@ public class ControllerPhone {
   @GetMapping("/getCodeInfo")
   public List<Country> getCountryInfo(
       @RequestParam(name = "phonecode", defaultValue = "0") Long code) {
-    return phoneService.findByPhoneCode(code);
+    List<Country> countries = phoneService.findByPhoneCode(code);
+    if (countries.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Requested resource is not found.");
+    }
+    return countries;
   }
 
   /**
@@ -129,7 +134,7 @@ public class ControllerPhone {
         return ResponseEntity.ok("Новый язык успешно создан и добавлен к стране");
       }
     } else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -174,7 +179,7 @@ public class ControllerPhone {
       phoneService.saveCountry(country);
       return ResponseEntity.ok("Updated successfully");
     } else {
-      return ResponseEntity.ok("The country wasn't found");
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
   }
 

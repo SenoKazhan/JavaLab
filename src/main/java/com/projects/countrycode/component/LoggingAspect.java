@@ -16,6 +16,9 @@ public class LoggingAspect {
   @Pointcut("execution(* com.projects.countrycode.controller.*.create*(..))")
   public void create() {}
 
+  @Pointcut("execution(* com.projects.countrycode.controller..addLanguageToCountry(..))")
+  public void addLanguage() {}
+
   @Pointcut("execution(* com.projects.countrycode.controller.*.delete*(..))")
   public void delete() {}
 
@@ -25,6 +28,10 @@ public class LoggingAspect {
   @AfterReturning(pointcut = "create()", returning = "result")
   public void logCreate(Object result) {
     logger.info("Created: {}", result);
+  }
+  @AfterReturning(pointcut = "addLanguage()", returning = "result")
+  public void logAddLanguage(Object result) {
+    logger.info("Language Added: {}", result);
   }
 
   @AfterReturning(pointcut = "delete()", returning = "result")

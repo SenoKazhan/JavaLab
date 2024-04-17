@@ -53,7 +53,7 @@ public class Country {
   private List<City> cities = new ArrayList<>();
 
   @ManyToMany(
-      fetch = FetchType.LAZY,
+      fetch = FetchType.EAGER,
       cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(
       name = "count_lang",

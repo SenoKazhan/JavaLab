@@ -13,7 +13,7 @@ public interface CityService {
    * @return the list
    */
   List<City> findAllCities();
-
+  void saveBulk(List<City> cityList, Integer countryId);
   /**
    * Create.
    *

@@ -26,7 +26,7 @@ public class Language {
   private String name;
 
   @ManyToMany(
-      fetch = FetchType.LAZY,
+      fetch = FetchType.EAGER,
       cascade = {CascadeType.PERSIST, CascadeType.MERGE},
       mappedBy = "languages")
   private Set<Country> countries = new HashSet<>();

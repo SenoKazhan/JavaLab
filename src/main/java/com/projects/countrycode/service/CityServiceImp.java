@@ -35,6 +35,12 @@ public class CityServiceImp implements CityService {
     this.cache = cache;
   }
 
+  /**
+   * Save.
+   *
+   * @param cityRequest the city request
+   * @param countryId the country id
+   */
   @Override
   public void save(City cityRequest, Integer countryId) {
     Optional<Country> countryOptional = countryRepository.findById(countryId);
@@ -45,6 +51,31 @@ public class CityServiceImp implements CityService {
 
       cityRepository.save(cityRequest);
       cache.putCache(CACHE_KEY + cityRequest.getId(), cityRequest);
+    } else {
+      throw new ResponseStatusException(HttpStatus.CONFLICT);
+    }
+  }
+
+  /**
+   * Save bulk.
+   *
+   * @param cityList the city list
+   * @param countryId the country id
+   */
+  @Override
+  public void saveBulk(List<City> cityList, Integer countryId) {
+    Optional<Country> countryOptional = countryRepository.findById(countryId);
+
+    if (countryOptional.isPresent()) {
+      Country country = countryOptional.get();
+
+      cityList.forEach(
+          city -> {
+            city.setCountry(country);
+            cityRepository.save(city);
+            cache.putCache(CACHE_KEY + city.getId(), city);
+          });
+
     } else {
       throw new ResponseStatusException(HttpStatus.CONFLICT);
     }

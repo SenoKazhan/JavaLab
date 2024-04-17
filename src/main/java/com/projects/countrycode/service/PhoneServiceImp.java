@@ -4,6 +4,8 @@ import com.projects.countrycode.component.Cache;
 import com.projects.countrycode.domain.Country;
 import com.projects.countrycode.repodao.CountryRepository;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,13 +31,14 @@ public class PhoneServiceImp implements PhoneService {
 
   @Override
   public Country findById(Integer id) {
-    if (cache.containsKey(CACHE_KEY + id)) {
-      return (Country) cache.getCache(CACHE_KEY + id);
-    }
-    Country country =
-        repoDao.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    cache.putCache(CACHE_KEY + id, country);
-    return repoDao.findById(id).orElse(null);
+    return Optional.ofNullable(cache.getCache(CACHE_KEY + id))
+            .map(Country.class::cast)
+            .orElseGet(() -> {
+              Country country = repoDao.findById(id)
+                      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+              cache.putCache(CACHE_KEY + id, country);
+              return country;
+            });
   }
 
   @Override
@@ -67,7 +70,8 @@ public class PhoneServiceImp implements PhoneService {
 
   @Override
   public List<Country> findByPhoneCode(Long phone) {
-    return repoDao.findByPhone(phone);
+    return repoDao.findAll().stream()
+            .filter(country -> country.getPhone().equals(phone)).toList();
   }
 
   @Override

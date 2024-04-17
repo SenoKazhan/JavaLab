@@ -16,9 +16,10 @@ public interface CityRepository extends JpaRepository<City, Integer> {
    * @param countryId the country id
    * @return the list
    */
-  @Query("SELECT c FROM City c WHERE c.country.id = ?1")
+@Query("SELECT c FROM City c WHERE c.country.id = ?1")
   List<City> findCitiesByCountryId(Integer countryId);
 
+  //   @Query(value = "SELECT * FROM city c WHERE c.country_id = ?1", nativeQuery = true)
   City save(City city);
 
   /**

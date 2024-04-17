@@ -82,6 +82,14 @@ public class ControllerCity {
     cityService.save(cityRequest, countryId);
     return "New city was added";
   }
+  @Transactional
+  @ResponseStatus(HttpStatus.CREATED)
+  @PostMapping("countries/{countryId}/cities/bulk")
+  public String createCities(
+          @PathVariable(value = "countryId") Integer countryId, @RequestBody List<City> cityList) {
+    cityService.saveBulk(cityList, countryId);
+    return "New cities were added";
+  }
 
   /**
    * Update city.
