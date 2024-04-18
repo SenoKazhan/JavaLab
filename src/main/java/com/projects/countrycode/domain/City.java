@@ -19,7 +19,7 @@ public class City {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "city_sequence")
   @SequenceGenerator(name = "city_sequence", sequenceName = "city_id_seq", allocationSize = 1)
-  private Long id;
+  private Integer id;
 
   @Column(name = "name")
   private String name;
@@ -88,7 +88,10 @@ public class City {
    *
    * @return the id
    */
-  public Long getId() {
+  public Integer getId() {
     return id;
+  }
+  public City(Integer id) {
+    this.id = id;
   }
 }
