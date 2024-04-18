@@ -2,6 +2,7 @@ package com.projects.countrycode.dto;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -73,8 +74,8 @@ class CountryDtoTest {
     country3.setLanguages(Arrays.asList("English", "French"));
 
     // Test equality
-    assertTrue(country1.equals(country2));
-    assertFalse(country1.equals(country3));
+    assertEquals(country1, country2);
+    assertNotEquals(country1, country3);
   }
 
   @Test
