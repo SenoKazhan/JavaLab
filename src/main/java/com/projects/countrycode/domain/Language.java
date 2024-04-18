@@ -20,7 +20,7 @@ public class Language {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lang_sequence")
   @SequenceGenerator(name = "lang_sequence", sequenceName = "lang_id_seq", allocationSize = 1)
-  private Long id;
+  private Integer id;
 
   @Column(name = "name")
   private String name;
@@ -43,6 +43,10 @@ public class Language {
   public Language(String languageName, Set<Country> countries) {
     this.name = languageName;
     this.countries = countries;
+  }
+
+  public Language(String name) {
+    this.name = name;
   }
 
   /**
@@ -109,7 +113,10 @@ public class Language {
    *
    * @return the id
    */
-  public Long getId() {
+  public Integer getId() {
     return id;
+  }
+
+  public void setId(Integer languageId) {
   }
 }

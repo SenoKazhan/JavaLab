@@ -30,7 +30,77 @@ class ControllerCityTest {
     MockitoAnnotations.initMocks(this);
     cityController = new ControllerCity(cityService, cityRepository);
   }
+  @Test
+  void findCityById_shouldReturnCity() {
+    // Arrange
+    Integer cityId = 1;
+    City expectedCity = new City("Test City", new Country());
+    when(cityService.getCityById(cityId)).thenReturn(expectedCity);
 
+    // Act
+    City result = cityController.findCityById(cityId);
+
+    // Assert
+    assertEquals(expectedCity, result);
+  }
+  @Test
+  void createCity_shouldReturnSuccessMessage() {
+    // Arrange
+    Integer countryId = 1;
+    City cityRequest = new City("New City", new Country());
+
+    // Act
+    String result = cityController.createCity(countryId, cityRequest);
+
+    // Assert
+    verify(cityService).save(cityRequest, countryId);
+    assertEquals("New city was added", result);
+  }
+
+  @Test
+  void createCities_shouldReturnSuccessMessage() {
+    // Arrange
+    Integer countryId = 1;
+    List<City> cityList = new ArrayList<>();
+    cityList.add(new City("City 1", new Country()));
+    cityList.add(new City("City 2", new Country()));
+
+    // Act
+    String result = cityController.createCities(countryId, cityList);
+
+    // Assert
+    verify(cityService).saveBulk(cityList, countryId);
+    assertEquals("New cities were added", result);
+  }
+
+  @Test
+  void updateCity_shouldUpdateCity() {
+    // Arrange
+    Integer cityId = 1;
+    Integer countryId = 1;
+    City cityRequest = new City("Updated City", new Country());
+
+    // Act
+    cityController.updateCity(cityId, countryId, cityRequest);
+
+    // Assert
+    verify(cityService).updateCity(cityRequest, cityId);
+  }
+  @Test
+  void getCitiesByCountry_shouldReturnListOfCities() {
+    // Arrange
+    Integer countryId = 1;
+    List<City> expectedCities = new ArrayList<>();
+    expectedCities.add(new City("City 1", new Country()));
+    expectedCities.add(new City("City 2", new Country()));
+    when(cityRepository.findCitiesByCountryId(countryId)).thenReturn(expectedCities);
+
+    // Act
+    List<City> result = cityController.getCitiesByCountry(countryId);
+
+    // Assert
+    assertEquals(expectedCities, result);
+  }
   @Test
   void testFindAllCities() {
     // Mock data
@@ -52,7 +122,18 @@ class ControllerCityTest {
     assertEquals("City 1", result.get(0).getName());
     assertEquals("City 2", result.get(1).getName());
   }
+  @Test
+  void deleteCity_shouldDeleteCityAndReturnSuccessMessage() {
+    // Arrange
+    Integer cityId = 1;
 
+    // Act
+    String result = cityController.deleteCity(cityId);
+
+    // Assert
+    verify(cityService).deleteCity(cityId);
+    assertEquals("City deleted successfully", result);
+  }
   @Test
   void testDeleteAllCommentsOfCountry() {
     // Mock data
