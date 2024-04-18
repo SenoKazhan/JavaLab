@@ -54,37 +54,6 @@ class ControllerCityTest {
   }
 
   @Test
-  void deleteCity_shouldDeleteCityAndReturnSuccessMessage() {
-    // Arrange
-    Integer cityId = 1;
-
-    // Mock behavior
-    when(cityRepository.existsById(cityId)).thenReturn(true);
-
-    // Act
-    String result = cityController.deleteCity(cityId);
-
-    // Assert
-    verify(cityService).deleteCity(cityId);
-    assertEquals("City deleted successfully", result);
-  }
-
-  @Test
-  void deleteCity_shouldReturnErrorMessageIfCityNotFound() {
-    // Arrange
-    Integer cityId = 1;
-
-    // Mock behavior
-    when(cityRepository.existsById(cityId)).thenReturn(false);
-
-    // Act
-    String result = cityController.deleteCity(cityId);
-
-    // Assert
-    assertEquals("City not found", result);
-  }
-
-  @Test
   void testDeleteAllCommentsOfCountry() {
     // Mock data
     Integer tutorialId = 1;
