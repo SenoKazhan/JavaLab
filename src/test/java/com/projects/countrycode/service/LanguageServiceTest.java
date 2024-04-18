@@ -140,29 +140,50 @@ class LanguageServiceTest {
     verify(languageRepository, times(1)).save(existingLanguage);
     verify(cache, times(1)).putCache(CACHE_KEY + languageId, existingLanguage);
   }
+
   @Test
-  void update_ShouldGetLanguageFromCacheAndUpdate() {
-    // Arrange
-    Integer languageId = 1;
-    Language updatedLanguage = new Language("Updated Language");
-    Cache cache = mock(Cache.class);
-    LanguageRepository languageRepository = mock(LanguageRepository.class);
-    Language existingLanguage = new Language("Existing Language");
-    when(cache.containsKey(CACHE_KEY + languageId)).thenReturn(true);
-    when(cache.getCache(CACHE_KEY + languageId)).thenReturn(existingLanguage);
-    when(languageRepository.findById(languageId)).thenReturn(Optional.of(existingLanguage));
-    LanguageServiceImp languageService = new LanguageServiceImp(languageRepository, cache);
+  void testUpdate_LanguageExists() {
+    // Mock data
+    int languageId = 1;
+    Language language = new Language();
+    language.setId(languageId);
+    language.setName("Old Language Name");
+    Language updatedLanguageRequest = new Language();
+    updatedLanguageRequest.setName("New Language Name");
+    when(cache.containsKey(CACHE_KEY + languageId)).thenReturn(false);
+    when(languageRepository.findById(languageId)).thenReturn(Optional.of(language));
 
-    // Act
-    languageService.update(updatedLanguage, languageId);
+    // Call the service method
+    languageService.update(updatedLanguageRequest, languageId);
 
-    // Assert
-    assertEquals("Updated Language", existingLanguage.getName());
-    verify(languageRepository, times(1)).save(existingLanguage);
-    verify(cache, times(1)).putCache(CACHE_KEY + languageId, existingLanguage);
+    // Verify the repository method was called with the updated language
+    verify(languageRepository, times(1)).save(language);
+
+    // Verify the cache was updated with the updated language
+    verify(cache, times(1)).putCache(CACHE_KEY + languageId, language);
+
+    // Verify the language name was updated
+    assertEquals(updatedLanguageRequest.getName(), language.getName());
   }
+  @Test
+  void testUpdate_LanguageNotFound() {
+    // Mock data
+    int languageId = 1;
+    Language updatedLanguageRequest = new Language();
+    updatedLanguageRequest.setName("New Language Name");
+    when(cache.containsKey(CACHE_KEY + languageId)).thenReturn(false);
+    when(languageRepository.findById(languageId)).thenReturn(Optional.empty());
 
+    // Call the service method and verify the exception
+    assertThrows(ResponseStatusException.class, () -> languageService.update(updatedLanguageRequest, languageId));
+    ;
 
+    // Verify the repository method was not called
+    verify(languageRepository, never()).save(any());
+
+    // Verify the cache was not updated
+    verify(cache, never()).putCache(anyString(), any());
+  }
   @Test
   void deleteLanguage_ShouldDeleteLanguageAndRemoveFromCache() {
     // Arrange

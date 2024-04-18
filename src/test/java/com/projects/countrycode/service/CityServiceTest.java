@@ -1,6 +1,7 @@
 package com.projects.countrycode.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -23,6 +24,7 @@ class CityServiceTest {
   @Mock private CountryRepository countryRepository;
   @Mock private Cache cache;
   @Mock private CityService cityService;
+  private static final String CACHE_KEY = "city-";
 
   @BeforeEach
   void setUp() {
@@ -62,27 +64,65 @@ class CityServiceTest {
   }
 
   @Test
-  void saveBulk_ShouldThrowResponseStatusException_WhenCountryNotFound() {
-    // Arrange
-    Integer countryId = 1;
+  void testSaveBulk_CountryExists() {
+    // Mock data
+    int countryId = 1;
+    List<City> cityList = new ArrayList<>();
+    Country country = new Country();
+    when(countryRepository.findById(countryId)).thenReturn(Optional.of(country));
+
+    // Call the service method
+    cityService.saveBulk(cityList, countryId);
+
+    // Verify the repository method was called for each city
+    verify(cityRepository, times(cityList.size())).save(any());
+
+    // Verify the cache was updated for each city
+    verify(cache, times(cityList.size())).putCache(anyString(), any());
+
+    // Verify the cities were associated with the country
+    for (City city : cityList) {
+      assertSame(country, city.getCountry());
+    }
+  }
+
+  @Test
+  void testSaveBulk_CountryNotFound() {
+    // Mock data
+    int countryId = 1;
+    List<City> cityList = new ArrayList<>();
+    when(countryRepository.findById(countryId)).thenReturn(Optional.empty());
+
+    // Call the service method and verify the exception
+    assertThrows(ResponseStatusException.class, () -> cityService.saveBulk(cityList, countryId));
+    // Verify the repository method was not called
+    verify(cityRepository, never()).save(any());
+
+    // Verify the cache was not updated
+    verify(cache, never()).putCache(anyString(), any());
+  }
+
+  @Test
+  void testSaveBulk_AssociateCitiesWithCountry() {
+    // Mock data
+    int countryId = 1;
+    Country country = new Country();
+    when(countryRepository.findById(countryId)).thenReturn(Optional.of(country));
+
     List<City> cityList = new ArrayList<>();
     City city1 = new City();
     City city2 = new City();
     cityList.add(city1);
     cityList.add(city2);
 
-    City cityRequest = new City(); // Create an instance of City
+    // Call the service method
+    cityService.saveBulk(cityList, countryId);
 
-    when(countryRepository.findById(countryId)).thenReturn(Optional.empty());
-
-    // Act & Assert
-    ResponseStatusException exception =
-        assertThrows(
-            ResponseStatusException.class, () -> cityService.saveBulk(cityList, countryId));
-
-    assertThrows(ResponseStatusException.class, () -> cityService.save(cityRequest, countryId));
+    // Verify the cities were associated with the country
+    for (City city : cityList) {
+      assertSame(country, city.getCountry());
+    }
   }
-
   @Test
   void findAllCities_ShouldReturnListOfCities() {
     // Arrange
@@ -139,21 +179,49 @@ class CityServiceTest {
     assertThrows(ResponseStatusException.class, () -> cityService.getCityById(cityId));
   }
 
+
   @Test
-  void updateCity_ShouldUpdateCity() {
-    // Arrange
-    Integer cityId = 1;
-    City cityRequest = new City();
+  void testUpdateCity_CityExists() {
+    // Mock data
+    int cityId = 1;
     City city = new City();
-    when(cache.containsKey("city-" + cityId)).thenReturn(true);
-    when(cache.getCache("city-" + cityId)).thenReturn(city);
+    city.setName("Old City Name");
+    City updatedCityRequest = new City();
+    updatedCityRequest.setName("New City Name");
+    when(cache.containsKey(CACHE_KEY + cityId)).thenReturn(false);
+    when(cityRepository.findById(cityId)).thenReturn(Optional.of(city));
 
-    // Act
-    cityService.updateCity(cityRequest, cityId);
+    // Call the service method
+    cityService.updateCity(updatedCityRequest, cityId);
 
-    // Assert
-    verify(cityRepository).save(city);
-    verify(cache).putCache("city-" + cityId, city);
+    // Verify the repository method was called with the updated city
+    verify(cityRepository, times(1)).save(city);
+
+    // Verify the cache was updated with the updated city
+    verify(cache, times(1)).putCache(CACHE_KEY + cityId, city);
+
+    // Verify the city name was updated
+    assertEquals(updatedCityRequest.getName(), city.getName());
+  }
+
+  @Test
+  void testUpdateCity_CityNotFound() {
+    // Mock data
+    int cityId = 1;
+    City updatedCityRequest = new City();
+    updatedCityRequest.setName("New City Name");
+    when(cache.containsKey(CACHE_KEY + cityId)).thenReturn(false);
+    when(cityRepository.findById(cityId)).thenReturn(Optional.empty());
+
+    // Call the service method and verify the exception
+
+    assertThrows(ResponseStatusException.class, () -> cityService.updateCity(updatedCityRequest, cityId));
+
+    // Verify the repository method was not called
+    verify(cityRepository, never()).save(any());
+
+    // Verify the cache was not updated
+    verify(cache, never()).putCache(anyString(), any());
   }
 
   @Test
