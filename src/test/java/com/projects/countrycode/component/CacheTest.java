@@ -75,7 +75,7 @@ class CacheTest {
     cache2.putCache("key1", "value1");
 
     // Assuming EqualsVerifier is set up correctly
-    assertTrue(cache1.equals(cache2));
+    assertEquals(cache1, cache2);
   }
 
   @Test
