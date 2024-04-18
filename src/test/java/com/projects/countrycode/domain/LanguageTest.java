@@ -6,8 +6,10 @@ import java.util.HashSet;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 class LanguageTest {
+  @Mock
   private Language language;
 
   @BeforeEach

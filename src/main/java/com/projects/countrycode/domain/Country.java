@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -204,5 +205,9 @@ public class Country {
    */
   public void setLanguages(Set<Language> languages) {
     this.languages = languages;
+  }
+
+  public List<City> getCities() {
+    return cities;
   }
 }
