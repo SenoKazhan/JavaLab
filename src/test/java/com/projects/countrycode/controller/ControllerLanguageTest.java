@@ -27,7 +27,7 @@ class ControllerLanguageTest {
 
   @Mock private CountryRepository countryRepository;
 
-  private ControllerLanguage languageController;
+  @Mock private ControllerLanguage languageController;
 
   @BeforeEach
   void setUp() {
@@ -84,7 +84,7 @@ class ControllerLanguageTest {
 
   @Test
   void createLanguage_shouldReturnSuccessMessage() {
-    // Arrange
+
     Language language = new Language("Spanish");
 
     // Act
@@ -94,6 +94,7 @@ class ControllerLanguageTest {
     verify(languageService).save(language);
     assertEquals("Language saved successfully", result);
   }
+
   @Test
   void addCountryToLanguage_shouldReturnSuccessMessage() {
     // Arrange
@@ -104,20 +105,36 @@ class ControllerLanguageTest {
 
     // Mock behavior of languageRepository.findById
     when(languageRepository.findById(languageId)).thenReturn(Optional.of(language));
-    when(countryRepository.findByName(country.getName())).thenReturn(Optional.empty());
+
+    // Mock behavior of countryRepository.findByName
+    when(countryRepository.findByName(country.getName())).thenReturn(Optional.of(country));
 
     // Act
     ResponseEntity<String> result = languageController.addCountryToLanguage(languageId, country);
 
     // Assert
     assertEquals(HttpStatus.OK, result.getStatusCode());
-    assertEquals("Новая страна успешно создана и добавлена к языку", result.getBody());
+    assertEquals("Страна успешно добавлена к языку", result.getBody());
   }
 
+  @Test
+  void addCountryToLanguage_shouldReturnNotFoundWhenLanguageNotFound() {
+
+    Integer languageId = 1;
+    Country country = new Country(1, "USA", "US", 1L);
+
+    when(languageRepository.findById(languageId)).thenReturn(Optional.empty());
+
+
+    ResponseEntity<String> result = languageController.addCountryToLanguage(languageId, country);
+
+    // Assert
+    assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+  }
 
   @Test
   void updateLanguage_shouldReturnSuccessMessage() {
-    // Arrange
+
     Integer languageId = 1;
     Language language = new Language("French");
     language.setId(languageId);
@@ -132,7 +149,7 @@ class ControllerLanguageTest {
 
   @Test
   void deleteLanguage_shouldDeleteLanguage() {
-    // Arrange
+
     Integer languageId = 1;
     Language language = new Language("German");
     language.setId(languageId);
@@ -145,5 +162,19 @@ class ControllerLanguageTest {
     // Assert
     verify(languageService).deleteLanguage(languageId);
     assertEquals(HttpStatus.OK, result.getStatusCode());
+  }
+
+  @Test
+  void deleteLanguage_shouldReturnNotFoundWhenLanguageNotFound() {
+    // Arrange
+    Integer languageId = 1;
+    // Return an empty optional to simulate that the language is not found
+    when(languageRepository.findById(languageId)).thenReturn(Optional.empty());
+
+    // Act
+    ResponseEntity<Language> result = languageController.deleteLanguage(languageId);
+
+    // Assert
+    assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
   }
 }
