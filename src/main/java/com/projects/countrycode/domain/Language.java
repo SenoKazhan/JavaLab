@@ -32,7 +32,7 @@ public class Language {
   private Set<Country> countries = new HashSet<>();
 
   /** Instantiates a new Language. */
-  public Language() {}
+public Language() {}
 
   /**
    * Instantiates a new Language.
@@ -40,12 +40,17 @@ public class Language {
    * @param languageName the language name
    * @param countries the countries
    */
-  public Language(String languageName, Set<Country> countries) {
+public Language(String languageName, Set<Country> countries) {
     this.name = languageName;
     this.countries = countries;
   }
 
-  public Language(String name) {
+  /**
+   * Instantiates a new Language.
+   *
+   * @param name the name
+   */
+public Language(String name) {
     this.name = name;
   }
 
@@ -54,7 +59,7 @@ public class Language {
    *
    * @return the name
    */
-  public String getName() {
+public String getName() {
     return name;
   }
 
@@ -63,7 +68,7 @@ public class Language {
    *
    * @param languageName the language name
    */
-  public void setName(String languageName) {
+public void setName(String languageName) {
     this.name = languageName;
   }
 
@@ -72,7 +77,7 @@ public class Language {
    *
    * @return the countries
    */
-  public Set<Country> getCountries() {
+public Set<Country> getCountries() {
     return countries;
   }
 
@@ -81,7 +86,7 @@ public class Language {
    *
    * @param countries the countries
    */
-  public void setCountries(Set<Country> countries) {
+public void setCountries(Set<Country> countries) {
     this.countries = countries;
   }
 
@@ -90,7 +95,7 @@ public class Language {
    *
    * @param country the country
    */
-  public void addCountry(Country country) {
+public void addCountry(Country country) {
     this.countries.add(country);
     country.getLanguages().add(this);
   }
@@ -100,7 +105,7 @@ public class Language {
    *
    * @param tagId the tag id
    */
-  public void removeCountry(long tagId) {
+public void removeCountry(long tagId) {
     Country tag = this.countries.stream().filter(t -> t.getId() == tagId).findFirst().orElse(null);
     if (tag != null) {
       this.countries.remove(tag);
@@ -113,10 +118,16 @@ public class Language {
    *
    * @return the id
    */
-  public Integer getId() {
+public Integer getId() {
     return id;
   }
 
-  public void setId(Integer languageId) {
+  /**
+   * Sets id.
+   *
+   * @param languageId the language id
+   */
+public void setId(Integer languageId) {
+  this.id = languageId;
   }
 }
