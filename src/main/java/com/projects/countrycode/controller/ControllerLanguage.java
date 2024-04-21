@@ -4,6 +4,7 @@ import com.projects.countrycode.domain.Country;
 import com.projects.countrycode.domain.Language;
 import com.projects.countrycode.repodao.CountryRepository;
 import com.projects.countrycode.repodao.LanguageRepository;
+import com.projects.countrycode.service.CounterService;
 import com.projects.countrycode.service.LanguageService;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -27,30 +28,28 @@ public class ControllerLanguage {
   private final LanguageService languageService;
   private final LanguageRepository languageRepository;
   private final CountryRepository countryRepository;
+  private final CounterService counterService;
 
-  /**
-   * Instantiates a new Controller language.
-   *
-   * @param languageService the language service
-   * @param languageRepository the language repository
-   * @param countryRepository the country repository
-   */
+
   public ControllerLanguage(
       LanguageService languageService,
       LanguageRepository languageRepository,
-      CountryRepository countryRepository) {
+      CountryRepository countryRepository,
+      CounterService counterService) {
     this.languageService = languageService;
     this.languageRepository = languageRepository;
     this.countryRepository = countryRepository;
+    this.counterService = counterService;
   }
 
-  /**
-   * Find all languages list.
-   *
-   * @return the list
-   */
-  @GetMapping
+/**
+ * Find all languages list.
+ *
+ * @return the list
+ */
+@GetMapping
   public List<Language> findAllLanguages() {
+    counterService.incrementRequestCount(); // Включить отслеживание вызовов
     return languageService.getAllLanguages();
   }
 
@@ -71,7 +70,7 @@ public class ControllerLanguage {
    * @param id the id
    * @return the list
    */
-  @GetMapping("/{id}/c")
+@GetMapping("/{id}/c")
   public List<Country> findCouByLang(@PathVariable("id") Integer id) {
     return countryRepository.findCountriesByLanguageId(id);
   }
@@ -97,7 +96,7 @@ public class ControllerLanguage {
    * @param country the country
    * @return the response entity
    */
-  @PostMapping("/alc/{languageId}")
+@PostMapping("/alc/{languageId}")
   public ResponseEntity<String> addCountryToLanguage(
       @PathVariable("languageId") Integer languageId, @RequestBody Country country) {
     Optional<Language> languageOptional = languageRepository.findById(languageId);
@@ -141,7 +140,7 @@ public class ControllerLanguage {
    * @param id the id
    * @return the response entity
    */
-  @DeleteMapping("/{id}")
+@DeleteMapping("/{id}")
   public ResponseEntity<Language> deleteLanguage(@PathVariable Integer id) {
     Optional<Language> languageOptional;
     languageOptional = languageRepository.findById(id);

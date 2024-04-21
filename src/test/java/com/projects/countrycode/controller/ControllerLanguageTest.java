@@ -8,6 +8,7 @@ import com.projects.countrycode.domain.Country;
 import com.projects.countrycode.domain.Language;
 import com.projects.countrycode.repodao.CountryRepository;
 import com.projects.countrycode.repodao.LanguageRepository;
+import com.projects.countrycode.service.CounterService;
 import com.projects.countrycode.service.LanguageService;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +29,13 @@ class ControllerLanguageTest {
   @Mock private CountryRepository countryRepository;
 
   @Mock private ControllerLanguage languageController;
+  @Mock private  CounterService counterService;
 
   @BeforeEach
   void setUp() {
     MockitoAnnotations.initMocks(this);
     languageController =
-        new ControllerLanguage(languageService, languageRepository, countryRepository);
+        new ControllerLanguage(languageService, languageRepository, countryRepository, counterService);
   }
 
   @Test

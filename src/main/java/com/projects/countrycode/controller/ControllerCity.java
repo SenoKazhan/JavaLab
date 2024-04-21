@@ -4,6 +4,7 @@ import com.projects.countrycode.domain.City;
 import com.projects.countrycode.repodao.CityRepository;
 import com.projects.countrycode.service.CityService;
 import jakarta.transaction.Transactional;
+import java.util.Comparator;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,9 +41,12 @@ public class ControllerCity {
    *
    * @return the list
    */
-  @GetMapping("/cities")
+  @GetMapping("/cities") //!!!
   public List<City> findAllCities() {
-    return cityService.findAllCities();
+    // Sorting cities alphabetically
+    return cityService.findAllCities().stream()
+        .sorted(Comparator.comparing(City::getName))
+        .toList();
   }
 
   /**
@@ -82,11 +86,12 @@ public class ControllerCity {
     cityService.save(cityRequest, countryId);
     return "New city was added";
   }
-  @Transactional
+
+  @Transactional //!!!!
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("countries/{countryId}/cities/bulk")
   public String createCities(
-          @PathVariable(value = "countryId") Integer countryId, @RequestBody List<City> cityList) {
+      @PathVariable(value = "countryId") Integer countryId, @RequestBody List<City> cityList) {
     cityService.saveBulk(cityList, countryId);
     return "New cities were added";
   }

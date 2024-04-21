@@ -12,6 +12,7 @@ import com.projects.countrycode.domain.Language;
 import com.projects.countrycode.dto.CountryDto;
 import com.projects.countrycode.repodao.CountryRepository;
 import com.projects.countrycode.repodao.LanguageRepository;
+import com.projects.countrycode.service.CounterService;
 import com.projects.countrycode.service.PhoneService;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,13 +39,14 @@ class ControllerPhoneTest {
   @Mock private LanguageRepository languageRepository;
 
   @Mock private ControllerPhone phoneController;
+  @Mock private CounterService counterService;
 
   @BeforeEach
   void setUp() {
     MockitoAnnotations.initMocks(this);
     countryRepository = mock(CountryRepository.class);
     languageRepository = mock(LanguageRepository.class);
-    phoneController = new ControllerPhone(phoneService, countryRepository, languageRepository);
+    phoneController = new ControllerPhone(phoneService, countryRepository, languageRepository, counterService);
   }
 
   @Test
