@@ -26,7 +26,7 @@ public class CounterService {
   }
 
   /** Increment request count. */
-  public void incrementRequestCount() {
+  public synchronized void incrementRequestCount() {
     requestCount.incrementAndGet();
   }
 

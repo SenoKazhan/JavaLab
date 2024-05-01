@@ -29,13 +29,13 @@ class ControllerLanguageTest {
   @Mock private CountryRepository countryRepository;
 
   @Mock private ControllerLanguage languageController;
-  @Mock private  CounterService counterService;
+  @Mock private CounterService counterService;
 
   @BeforeEach
   void setUp() {
     MockitoAnnotations.initMocks(this);
     languageController =
-        new ControllerLanguage(languageService, languageRepository, countryRepository, counterService);
+        new ControllerLanguage(languageService, languageRepository, countryRepository);
   }
 
   @Test
@@ -126,7 +126,6 @@ class ControllerLanguageTest {
     Country country = new Country(1, "USA", "US", 1L);
 
     when(languageRepository.findById(languageId)).thenReturn(Optional.empty());
-
 
     ResponseEntity<String> result = languageController.addCountryToLanguage(languageId, country);
 

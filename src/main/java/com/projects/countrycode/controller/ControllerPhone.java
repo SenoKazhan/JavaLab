@@ -8,13 +8,13 @@ import com.projects.countrycode.domain.Language;
 import com.projects.countrycode.dto.CountryDto;
 import com.projects.countrycode.repodao.CountryRepository;
 import com.projects.countrycode.repodao.LanguageRepository;
-import com.projects.countrycode.service.CounterService;
 import com.projects.countrycode.service.PhoneService;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,13 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 /** The type Controller phone. */
+@CrossOrigin
 @RestController
 @RequestMapping("/api/countries")
 public class ControllerPhone {
   private final PhoneService phoneService;
   private final CountryRepository countryRepository;
   private final LanguageRepository languageRepository;
-  private final CounterService counterService;
 
   /**
    * Instantiates a new Controller phone.
@@ -42,17 +42,14 @@ public class ControllerPhone {
    * @param phoneService the phone service
    * @param countryRepository the country repository
    * @param languageRepository the language repository
-   * @param counterService the counter service
    */
-public ControllerPhone(
-          PhoneService phoneService,
-          CountryRepository countryRepository,
-          LanguageRepository languageRepository,
-          CounterService counterService) {
+  public ControllerPhone(
+      PhoneService phoneService,
+      CountryRepository countryRepository,
+      LanguageRepository languageRepository) {
     this.phoneService = phoneService;
     this.countryRepository = countryRepository;
     this.languageRepository = languageRepository;
-    this.counterService = counterService;
   }
 
   /**
@@ -62,7 +59,6 @@ public ControllerPhone(
    */
   @GetMapping
   public List<Country> findAllCountries() {
-    counterService.incrementRequestCount(); // Увеличиваем счетчик при каждом вызове
     return phoneService.findAllCountries();
   }
 
@@ -72,7 +68,7 @@ public ControllerPhone(
    * @param countryName the country name
    * @return the country info
    */
-@GetMapping("/getCountryInfo")
+  @GetMapping("/getCountryInfo")
   public Optional<Country> getCountryInfo(
       @RequestParam(name = "name", defaultValue = "null") String countryName) {
     return countryRepository.findByName(countryName);
@@ -84,7 +80,7 @@ public ControllerPhone(
    * @param code the code
    * @return the country info
    */
-@GetMapping("/getCodeInfo")
+  @GetMapping("/getCodeInfo")
   public List<Country> getCountryInfo(
       @RequestParam(name = "phonecode", defaultValue = "0") Long code) {
     List<Country> countries = phoneService.findByPhoneCode(code);
@@ -100,7 +96,7 @@ public ControllerPhone(
    * @param id the id
    * @return the response entity
    */
-@GetMapping("/{id}")
+  @GetMapping("/{id}")
   public ResponseEntity<CountryDto> findCountryById(@PathVariable("id") Integer id) {
     Country country = phoneService.findById(id);
     CountryDto countryDto = new CountryDto();
@@ -120,10 +116,9 @@ public ControllerPhone(
    * @param language the language
    * @return the response entity
    */
-@PostMapping("/alc/{countryId}")
+  @PostMapping("/alc/{countryId}")
   public ResponseEntity<String> addLanguageToCountry(
       @PathVariable("countryId") Integer countryId, @RequestBody Language language) {
-  counterService.incrementRequestCount();
     Optional<Country> countryOptional = countryRepository.findById(countryId);
     if (countryOptional.isPresent()) {
       Country country = countryOptional.get();
@@ -151,7 +146,7 @@ public ControllerPhone(
    * @param entityCountries the entity countries
    * @return the string
    */
-@Transactional
+  @Transactional
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping
   public String createCountry(@RequestBody Country entityCountries) {
@@ -166,7 +161,7 @@ public ControllerPhone(
    * @param entityCountries the entity countries
    * @return the response entity
    */
-@Transactional
+  @Transactional
   @ResponseStatus(HttpStatus.OK)
   @PutMapping("/{id}")
   public ResponseEntity<String> updateCountry(
@@ -196,7 +191,7 @@ public ControllerPhone(
    * @param id the id
    * @return the response entity
    */
-@Transactional
+  @Transactional
   @DeleteMapping("/{id}")
   public ResponseEntity<Country> deleteCountry(@PathVariable("id") Integer id) {
     Optional<Country> countryOptional = countryRepository.findById(id);

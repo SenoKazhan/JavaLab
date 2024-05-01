@@ -5,7 +5,7 @@ import com.projects.countrycode.domain.Country;
 import com.projects.countrycode.repodao.CountryRepository;
 import java.util.List;
 import java.util.Optional;
-
+import org.hibernate.Hibernate;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -32,9 +32,12 @@ public class PhoneServiceImp implements PhoneService {
   @Override
   public Country findById(Integer id) {
     return Optional.ofNullable(cache.getCache(CACHE_KEY + id))
-            .map(Country.class::cast)
-            .orElseGet(() -> {
-              Country country = repoDao.findById(id)
+        .map(Country.class::cast)
+        .orElseGet(
+            () -> {
+              Country country =
+                  repoDao
+                      .findById(id)
                       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
               cache.putCache(CACHE_KEY + id, country);
               return country;
@@ -70,9 +73,18 @@ public class PhoneServiceImp implements PhoneService {
 
   @Override
   public List<Country> findByPhoneCode(Long phone) {
-    return repoDao.findAll().stream()
-            .filter(country -> country.getPhone().equals(phone)).toList();
+    List<Country> countries = repoDao.findAll().stream()
+            .filter(country -> country.getPhone().equals(phone))
+            .toList();
+    // Загружаем список городов для каждой найденной страны
+    countries.forEach(country -> {
+      Hibernate.initialize(country.getCities());
+      // Устанавливаем список городов для каждой найденной страны
+      country.setCities(country.getCities());
+    });
+    return countries;
   }
+
 
   @Override
   public void deleteCountry(Integer id) {

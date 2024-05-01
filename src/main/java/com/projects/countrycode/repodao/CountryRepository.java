@@ -29,11 +29,4 @@ public interface CountryRepository extends JpaRepository<Country, Integer> { // 
   @Query("SELECT c FROM Country c JOIN c.languages l WHERE l.id = ?1")
   List<Country> findCountriesByLanguageId(Integer languageId);
 
-  /**
-   * Find by phone list.
-   *
-   * @param phone the phone
-   * @return the list
-   */
-  List<Country> findByPhone(Long phone);
 }

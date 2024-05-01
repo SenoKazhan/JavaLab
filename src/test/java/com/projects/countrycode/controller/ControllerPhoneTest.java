@@ -46,7 +46,7 @@ class ControllerPhoneTest {
     MockitoAnnotations.initMocks(this);
     countryRepository = mock(CountryRepository.class);
     languageRepository = mock(LanguageRepository.class);
-    phoneController = new ControllerPhone(phoneService, countryRepository, languageRepository, counterService);
+    phoneController = new ControllerPhone(phoneService, countryRepository, languageRepository);
   }
 
   @Test

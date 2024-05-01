@@ -84,6 +84,7 @@ public class LoggingAspect {
    */
   @AfterReturning(pointcut = "findLanguageById()", returning = "result")
   public void logFindLanguageById(Object result) {
+    counterService.incrementRequestCount();
     logger.info(
         "Language found by ID: {}, Request count: {}", result, counterService.getRequestCount());
   }
@@ -95,6 +96,7 @@ public class LoggingAspect {
    */
   @AfterReturning(pointcut = "findCouByLang()", returning = "result")
   public void logFindCouByLang(Object result) {
+    counterService.incrementRequestCount();
     logger.info(
         "Countries found by language ID: {}, Request count: {}",
         result,
@@ -106,11 +108,14 @@ public class LoggingAspect {
    *
    * @param result the result
    */
+
   @AfterReturning(pointcut = "findAllCountries()", returning = "result")
   public void logFindAllCountries(Object result) {
+    counterService.incrementRequestCount(); // Увеличиваем счетчик перед логированием
     logger.info(
-        "All countries found: {}, Request count: {}", result, counterService.getRequestCount());
+            "All countries found: {}, Request count: {}", result, counterService.getRequestCount());
   }
+
 
   /**
    * Log add language to country.
@@ -119,6 +124,7 @@ public class LoggingAspect {
    */
   @AfterReturning(pointcut = "addLanguageToCountry()", returning = "result")
   public void logAddLanguageToCountry(Object result) {
+    counterService.incrementRequestCount();
     logger.info("Language added to country: {}", result);
   }
 }
