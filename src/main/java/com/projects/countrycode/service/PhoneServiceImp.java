@@ -50,9 +50,10 @@ public class PhoneServiceImp implements PhoneService {
   }
 
   @Override
-  public void saveCountry(Country countryData) {
+  public boolean saveCountry(Country countryData) {
     cache.putCache(CACHE_KEY + countryData.getId(), countryData);
     repoDao.save(countryData);
+   return true;
   }
 
   @Override
@@ -87,8 +88,9 @@ public class PhoneServiceImp implements PhoneService {
 
 
   @Override
-  public void deleteCountry(Integer id) {
+  public boolean deleteCountry(Integer id) {
     repoDao.deleteById(id);
     cache.remove(CACHE_KEY + id);
+    return true;
   }
 }

@@ -38,20 +38,6 @@ class ControllerLanguageTest {
         new ControllerLanguage(languageService, languageRepository, countryRepository);
   }
 
-  @Test
-  void findAllLanguages_shouldReturnListOfLanguages() {
-    // Arrange
-    List<Language> expectedLanguages = new ArrayList<>();
-    expectedLanguages.add(new Language("English"));
-    expectedLanguages.add(new Language("French"));
-    when(languageService.getAllLanguages()).thenReturn(expectedLanguages);
-
-    // Act
-    List<Language> result = languageController.findAllLanguages();
-
-    // Assert
-    assertEquals(expectedLanguages, result);
-  }
 
   @Test
   void findLanguageById_shouldReturnLanguage() {

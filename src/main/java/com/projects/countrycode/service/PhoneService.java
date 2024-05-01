@@ -36,7 +36,7 @@ public interface PhoneService {
    *
    * @param countryData the country data
    */
-  void saveCountry(Country countryData);
+  boolean saveCountry(Country countryData);
 
   /**
    * Update country.
@@ -51,5 +51,5 @@ public interface PhoneService {
    *
    * @param id the id
    */
-  void deleteCountry(Integer id);
+  boolean deleteCountry(Integer id);
 }

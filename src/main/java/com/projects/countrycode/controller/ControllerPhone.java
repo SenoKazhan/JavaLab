@@ -14,22 +14,23 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 /** The type Controller phone. */
-@RestController
+@Controller
 @RequestMapping("/api/countries")
 public class ControllerPhone {
+  private static final String ERROR_METHOD = "errorMethod";
+  private static final String SUCCESS_METHOD = "successMethod";
   private final PhoneService phoneService;
   private final CountryRepository countryRepository;
   private final LanguageRepository languageRepository;
@@ -50,14 +51,11 @@ public class ControllerPhone {
     this.languageRepository = languageRepository;
   }
 
-  /**
-   * Find all countries list.
-   *
-   * @return the list
-   */
   @GetMapping
-  public List<Country> findAllCountries() {
-    return phoneService.findAllCountries();
+  public String findAllCountries(Model model) {
+    List<Country> countries = phoneService.findAllCountries();
+    model.addAttribute("countries", countries);
+    return "countries";
   }
 
   /**
@@ -138,68 +136,66 @@ public class ControllerPhone {
     }
   }
 
-  /**
-   * Save country string.
-   *
-   * @param entityCountries the entity countries
-   * @return the string
-   */
-  @Transactional
-  @ResponseStatus(HttpStatus.CREATED)
-  @PostMapping
-  public String createCountry(@RequestBody Country entityCountries) {
-    phoneService.saveCountry(entityCountries);
-    return "Saved successfully";
+  @GetMapping("/save")
+  public String showSaveCountryForm(final Model model) {
+    model.addAttribute("country", new Country());
+    return "saveCountry";
   }
 
-  /**
-   * Update country response entity.
-   *
-   * @param id the id
-   * @param entityCountries the entity countries
-   * @return the response entity
-   */
-  @Transactional
-  @ResponseStatus(HttpStatus.OK)
-  @PutMapping("/{id}")
-  public ResponseEntity<String> updateCountry(
-      @PathVariable("id") Integer id, @RequestBody Country entityCountries) {
-    Optional<Country> countryOptional = countryRepository.findById(id);
-    if (countryOptional.isPresent()) {
-      Country country = countryOptional.get();
-      if (entityCountries.getName() != null) {
-        country.setName(entityCountries.getName());
-      }
-      if (entityCountries.getPhone() != null) {
-        country.setPhone(entityCountries.getPhone());
-      }
-      if (entityCountries.getCode() != null) {
-        country.setCode(entityCountries.getCode());
-      }
-      phoneService.saveCountry(country);
-      return ResponseEntity.ok("Updated successfully");
+  @PostMapping("/save")
+  public String createCountry(@ModelAttribute Country entityCountries) {
+    boolean checkError = phoneService.saveCountry(entityCountries);
+    if (checkError) {
+      return SUCCESS_METHOD;
     } else {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      return ERROR_METHOD;
     }
   }
 
-  /**
-   * Delete country response entity.
-   *
-   * @param id the id
-   * @return the response entity
-   */
+  @GetMapping("/update")
+  public String showUpdateCountryForm(final Model model) {
+    model.addAttribute("country", new Country());
+    return "updateCountry";
+  }
+
+  @PostMapping("/update")
+  public String updateCountry(
+      @RequestParam(required = false, name="id") Integer id, @ModelAttribute(name = "country") Country updatedCountry) {
+    Optional<Country> countryOptional = countryRepository.findById(id);
+    if (countryOptional.isPresent()) {
+      Country country = countryOptional.get();
+      if (updatedCountry.getName() != null) {
+        country.setName(updatedCountry.getName());
+      }
+      if (updatedCountry.getPhone() != null) {
+        country.setPhone(updatedCountry.getPhone());
+      }
+      if (updatedCountry.getCode() != null) {
+        country.setCode(updatedCountry.getCode());
+      }
+      phoneService.saveCountry(country);
+      return SUCCESS_METHOD;
+    } else {
+      return ERROR_METHOD;
+    }
+  }
+
+  @GetMapping("/delete")
+  public String getDeleteCountry() {
+    return "deleteCountry";
+  }
+
   @Transactional
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Country> deleteCountry(@PathVariable("id") Integer id) {
+  @PostMapping("/delete")
+  public String deleteCountry(@RequestParam("id") Integer id) {
     Optional<Country> countryOptional = countryRepository.findById(id);
     if (countryOptional.isPresent()) {
       Country country = countryOptional.get();
       country.getLanguages().forEach(language -> language.getCountries().remove(country));
-      phoneService.deleteCountry(id);
-      return ResponseEntity.ok().build();
-    } else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      if (phoneService.deleteCountry(id)) {
+        return SUCCESS_METHOD;
+      }
     }
+    return ERROR_METHOD;
   }
 }

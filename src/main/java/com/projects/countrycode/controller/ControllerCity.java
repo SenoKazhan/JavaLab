@@ -41,7 +41,7 @@ public class ControllerCity {
    *
    * @return the list
    */
-  @GetMapping("/cities") //!!!
+  @GetMapping("/cities")
   public List<City> findAllCities() {
     // Sorting cities alphabetically
     return cityService.findAllCities().stream()
