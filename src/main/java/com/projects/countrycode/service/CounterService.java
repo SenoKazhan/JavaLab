@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Data
 public class CounterService {
-  private static final CounterService INSTANCE = new CounterService();
+  private static CounterService instance;
 
   private AtomicInteger requestCount;
 
@@ -22,7 +22,10 @@ public class CounterService {
    * @return the instance
    */
   public static CounterService getInstance() {
-    return INSTANCE;
+    if (instance == null) {
+      instance = new CounterService();
+    }
+    return instance;
   }
 
   /** Increment request count. */
