@@ -57,20 +57,31 @@ public class PhoneServiceImp implements PhoneService {
   }
 
   @Override
-  public void updateCountry(Country countryData, Integer id) {
+  public boolean updateCountry(Country countryData, Integer id) {
+    if (id == null || id <= 0) { // Проверяем, что id не пустое и больше 0
+      return false; // Если id пустое или меньше или равно 0, возвращаем false
+    }
+
     Country country;
     if (cache.containsKey(CACHE_KEY + id)) {
       country = (Country) cache.getCache(CACHE_KEY + id);
     } else {
-      country =
-          repoDao.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+      try {
+        country = repoDao.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+      } catch (ResponseStatusException e) {
+        return false; // Если возникает исключение, возвращаем false
+      }
     }
+
     country.setName(countryData.getName());
     repoDao.save(country);
 
     cache.putCache(CACHE_KEY + id, country);
     repoDao.save(countryData);
+
+    return true; // Возвращаем true, если все прошло успешно
   }
+
 
   @Override
   public List<Country> findByPhoneCode(Long phone) {

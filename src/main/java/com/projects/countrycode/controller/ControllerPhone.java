@@ -160,7 +160,8 @@ public class ControllerPhone {
 
   @PostMapping("/update")
   public String updateCountry(
-      @RequestParam(required = false, name="id") Integer id, @ModelAttribute(name = "country") Country updatedCountry) {
+      @RequestParam(required = false, name = "id") Integer id,
+      @ModelAttribute(name = "country") Country updatedCountry) {
     Optional<Country> countryOptional = countryRepository.findById(id);
     if (countryOptional.isPresent()) {
       Country country = countryOptional.get();
@@ -175,19 +176,17 @@ public class ControllerPhone {
       }
       phoneService.saveCountry(country);
       return SUCCESS_METHOD;
-    } else {
-      return ERROR_METHOD;
+    } else return ERROR_METHOD;
     }
-  }
 
   @GetMapping("/delete")
-  public String getDeleteCountry() {
-    return "deleteCountry";
+  public String getDeleteCountry(@RequestParam(name="id") Integer id) {
+    return "redirect:/api/countries";
   }
 
   @Transactional
   @PostMapping("/delete")
-  public String deleteCountry(@RequestParam("id") Integer id) {
+  public String deleteCountry(@RequestParam(name="id") Integer id) {
     Optional<Country> countryOptional = countryRepository.findById(id);
     if (countryOptional.isPresent()) {
       Country country = countryOptional.get();

@@ -44,7 +44,7 @@ public interface PhoneService {
    * @param countryData the country data
    * @param id the id
    */
-  void updateCountry(Country countryData, Integer id);
+  boolean updateCountry(Country countryData, Integer id);
 
   /**
    * Delete country.
