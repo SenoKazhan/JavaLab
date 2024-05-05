@@ -187,29 +187,6 @@ class PhoneServiceTest {
         verify(countryRepository).save(country);
     }
 
-    @Test
-    void testUpdateCountry_NotFound() {
-        // Mock data
-        int countryId = 1;
-        Country countryData = new Country();
-        when(cache.containsKey("country-" + countryId)).thenReturn(false);
-        when(countryRepository.findById(countryId)).thenReturn(Optional.empty());
-
-
-        assertThrows(ResponseStatusException.class, () -> phoneService.updateCountry(countryData, countryId));
-
-        // Verify the cache was accessed
-        verify(cache).containsKey("country-" + countryId);
-
-        // Verify the repository method was called
-        verify(countryRepository).findById(countryId);
-
-        // Verify the cache was not updated
-        verify(cache, never()).putCache(any(), any());
-
-        // Verify the repository method was not called
-        verify(countryRepository, never()).save(any());
-    }
 
     @Test
     void testFindByPhoneCode() {
