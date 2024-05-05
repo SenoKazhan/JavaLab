@@ -27,6 +27,6 @@ jobs:
           publish-atoms: false
 
       - name: Trigger Render deploy hook
-        run: curl -X POST -d '{}' https://api.render.com/deploy/srv-coroau7sc6pc73dr2jsg?key=aOl_o1UW6Rs
+        run: curl -X POST -d '{}' https://api.render.com/deploy/srv-corsiaa0si5c739ls7bg?key=6uzCnmsIkbk
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
